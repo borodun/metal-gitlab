@@ -15,7 +15,8 @@ $ k apply -f manifests/metallb/metallb.yaml
 ```
 
 2. Wait for pods to be in Running state
-3. Edit *metallb-configmap.yaml* according to your needs. See [example](https://metallb.org/usage/example/)
+3. Edit *manifests/metallb/metallb-configmap.yaml* according to your needs.
+   See [example](https://metallb.org/usage/example/)
 4. Apply config
 
 ```shell
@@ -42,7 +43,7 @@ $ mkdir -p /mnt/data/repository-pv
 $ chmod 777 /mnt/data/*
 ```
 
-NOTE: Do that every time you are redeploying gitlab to remove garbage.
+NOTE: Do that every time you are redeploying gitlab to remove garbage
 
 4. Add persistent volumes
 
@@ -87,9 +88,9 @@ $ k get svc -n gitlab
 6. Configure your firewall to access *nodeports* that LoadBalancer got. It should be like:
 
 ```
-<firewall-ip>:80 -> <node-ip>:<http-nodeport>
+<firewall-ip>:80  -> <node-ip>:<http-nodeport>
 <firewall-ip>:443 -> <node-ip>:<https-nodeport>
-<firewall-ip>:22 -> <node-ip>:<ssh-nodeport>
+<firewall-ip>:22  -> <node-ip>:<ssh-nodeport>
 ```
 
 7. You should be able to access your gitlab with your domain. Get *root* password
@@ -110,7 +111,7 @@ Links: \
 $ helm show values gitlab/gitlab > values.yaml
 ```
 
-2. Change omniauth config. My config:
+2. Change omniauth config in *values.yaml*. Config example:
 
 ```yaml
  omniauth:
@@ -129,7 +130,14 @@ $ helm show values gitlab/gitlab > values.yaml
      - secret: gitlab-google-oauth2
 ```
 
-3. Apply changes
+3. Add *gitlab-google-oauth2* secret,
+   see [example](https://github.com/borodun/metal-gitlab/blob/main/poc-gitlab/manifests/google-provider-secret.yaml)
+
+```shell
+$ k create secret generic -n gitlab gitlab-google-oauth2 --from-file=provider=manifests/google-provider-secret.yaml  
+```
+
+4. Apply changes
 
 ```shell
 $ helm upgrade --install gitlab gitlab/gitlab \
