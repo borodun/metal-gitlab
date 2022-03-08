@@ -1,2 +1,2 @@
 # metal-gitlab
-Gitlab intallation on bare-metal k8s 
+Gitlab installation on bare-metal k8s
