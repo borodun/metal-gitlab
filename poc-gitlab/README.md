@@ -75,3 +75,7 @@ $ k get svc -n gitlab
 <firewall-ip>:443 -> <node-ip>:<https-nodeport>
 <firewall-ip>:22 -> <node-ip>:<ssh-nodeport>
 ```
+7. You should be able to access your gitlab with your domain. Get *root* password
+```shell
+$ k get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' -n gitlab | base64 --decode ; echo
+```
