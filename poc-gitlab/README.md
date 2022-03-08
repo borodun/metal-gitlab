@@ -1,6 +1,6 @@
 # Proof of concept gitlab
 
-K8s cluster is installed using *[k0sctl](https://github.com/k0sproject/k0sctl)*
+K8s cluster is deployed using [k0sctl](https://github.com/k0sproject/k0sctl) with *k0sctl-config.yaml*
 
 ## Instruction
 
