@@ -9,4 +9,4 @@ data:
     - name: local-ips
       protocol: layer2
       addresses:
-      - 10.10.10.223
+      - 10.10.10.230 - 10.10.10.240
