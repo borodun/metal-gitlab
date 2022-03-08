@@ -35,7 +35,7 @@ $ k apply -f manifests/namespace.yaml
 $ k apply -f manifests/volumes/
 ```
 
-## Install gitlab using helm
+### Install gitlab using helm
 
 1. Add gitlab repo
 
@@ -70,12 +70,57 @@ $ k get svc -n gitlab
 ```
 
 6. Configure your firewall to access *nodeports* that LoadBalancer got. It should be like:
+
 ```
 <firewall-ip>:80 -> <node-ip>:<http-nodeport>
 <firewall-ip>:443 -> <node-ip>:<https-nodeport>
 <firewall-ip>:22 -> <node-ip>:<ssh-nodeport>
 ```
+
 7. You should be able to access your gitlab with your domain. Get *root* password
+
 ```shell
 $ k get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' -n gitlab | base64 --decode ; echo
+```
+
+### Adding SSO to Gitlab
+
+[Preparation](https://docs.gitlab.com/ee/integration/omniauth.html) \
+[Adding omniauth to your release](https://docs.gitlab.com/charts/charts/globals#omniauth)
+
+1. Get values
+
+```shell
+$ helm show values gitlab/gitlab > values.yaml
+```
+
+2. Change omniauth config. My config:
+
+```yaml
+ omniauth:
+   enabled: true # Default: false
+   autoSignInWithProvider:
+   syncProfileFromProvider: [ ]
+   syncProfileAttributes: [ 'email' ]
+   allowSingleSignOn: [ 'saml', 'google_oauth2' ] # Default: ['saml']
+   blockAutoCreatedUsers: false # Default: true
+   autoLinkLdapUser: true # Default: false
+   autoLinkSamlUser: false
+   autoLinkUser: [ ]
+   externalProviders: [ ]
+   allowBypassTwoFactor: [ ]
+   providers: # Default: []
+     - secret: gitlab-google-oauth2
+```
+
+3. Apply changes
+
+```shell
+$ helm upgrade --install gitlab gitlab/gitlab \
+	--kubeconfig=~/.kube/config \
+	--set global.hosts.domain=<yourdomain.com> \
+	--set global.hosts.externalIP=<firewall-ip> \
+	--set certmanager-issuer.email=<your-email> \
+	-f values.yaml \
+	--version=5.8.2 -n gitlab
 ```
