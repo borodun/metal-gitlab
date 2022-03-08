@@ -68,3 +68,10 @@ $ k apply -f manifests/net/ingress-lb.yaml
 ```shell
 $ k get svc -n gitlab
 ```
+
+6. Configure your firewall to access *nodeports* that LoadBalancer got. It should be like:
+```
+<firewall-ip>:80 -> <node-ip>:<http-nodeport>
+<firewall-ip>:443 -> <node-ip>:<https-nodeport>
+<firewall-ip>:22 -> <node-ip>:<ssh-nodeport>
+```
