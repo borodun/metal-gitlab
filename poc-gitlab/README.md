@@ -14,8 +14,9 @@ $ k apply -f manifests/metallb/namespace.yaml
 $ k apply -f manifests/metallb/metallb.yaml
 ```
 
-2. Wait for pods to be in Ready state
+2. Wait for pods to be in Running state
 3. Edit *metallb-configmap.yaml* according to your needs. See [example](https://metallb.org/usage/example/)
+4. Apply config
 
 ```shell
 $ k apply -f manifests/metallb/metallb-configmap.yaml
@@ -29,7 +30,21 @@ $ k apply -f manifests/metallb/metallb-configmap.yaml
 $ k apply -f manifests/namespace.yaml
 ```
 
-2. Add persistent volumes
+2. If you haven't deployed k8s with *k0s-config.yaml* then on every worker node prepare volumes
+
+```shell
+$ rm -r /mnt/data/*
+$ mkdir -p /mnt/data/postgres-pv
+$ mkdir -p /mnt/data/minio-pv
+$ mkdir -p /mnt/data/prometheus-pv
+$ mkdir -p /mnt/data/redis-pv
+$ mkdir -p /mnt/data/repository-pv
+$ chmod 777 /mnt/data/*
+```
+
+NOTE: Do that every time you are redeploying gitlab to remove garbage.
+
+4. Add persistent volumes
 
 ```shell
 $ k apply -f manifests/volumes/
@@ -85,6 +100,7 @@ $ k get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}'
 
 ### Adding SSO to Gitlab
 
+Links: \
 [Preparation](https://docs.gitlab.com/ee/integration/omniauth.html) \
 [Adding omniauth to your release](https://docs.gitlab.com/charts/charts/globals#omniauth)
 
