@@ -130,14 +130,15 @@ $ helm show values gitlab/gitlab > values.yaml
      - secret: gitlab-google-oauth2
 ```
 
-3. Add *gitlab-google-oauth2* secret,
+3. Get your google oauth credentials, see [instruction](https://docs.gitlab.com/ee/integration/google.html)
+4. Add *gitlab-google-oauth2* secret,
    see [example](https://github.com/borodun/metal-gitlab/blob/main/poc-gitlab/manifests/google-provider-secret.yaml)
 
 ```shell
 $ k create secret generic -n gitlab gitlab-google-oauth2 --from-file=provider=manifests/google-provider-secret.yaml  
 ```
 
-4. Apply changes
+5. Apply changes
 
 ```shell
 $ helm upgrade --install gitlab gitlab/gitlab \
